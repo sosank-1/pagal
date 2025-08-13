@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-font: 'Montserrat', sans-serif;
+            --primary-color: #000;
+            --secondary-color: #555; /* FIXED invalid color (#00) */
+            --accent-color: #c0392b;
+            --light-bg: #fafafa;
+            --border-color: #e5e5e5;
+            --hover-bg: #f0f0f0;
+            --transition: all 0.3s ease;
+        }
+        /* Your existing CSS stays same */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" data-section="profile">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="orders">
+                            <i class="fas fa-shopping-bag"></i> Orders
+                        </a>
+                    </li>
+                    <!-- other nav items -->
+                </ul>
+            </nav>
+            
+            <!-- Logout -->
+            <div class="logout-link">
+                <a href="#" class="nav-link" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Log Out
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <section id="profile" class="content-section active">
+                <div class="section-header">
+                    <h2>Profile</h2>
+                </div>
+                <div class="minimal-card">
+                    <h3>Personal Information</h3>
+                    <p>Manage your personal details and account preferences.</p>
+                    <p>Welcome, <span id="userName"></span></p>
+                    <button class="btn">Edit Profile</button>
+                    <button class="btn btn-outline">Change Password</button>
+                </div>
+            </section>
+            <!-- Other sections stay same -->
+        </main>
+    </div>
+
+    <script>
+        // LOGIN CHECK on page load
+        const userData = localStorage.getItem("user");
+        if (!userData) {
+            window.location.href = "signin.html";
+        } else {
+            const user = JSON.parse(userData);
+            document.getElementById("userName").innerText = user.username || "User";
+        }
+
+        // Sidebar Navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-menu .nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    contentSections.forEach(s => s.classList.remove('active'));
+                    this.classList.add('active');
+                    const sectionId = this.getAttribute('data-section');
+                    if (sectionId) {
+                        document.getElementById(sectionId).classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // LOGOUT FUNCTION
+        function handleLogout() {
+            if (confirm('Are you sure you want to log out?')) {
+                // Clear localStorage/sessionStorage
+                localStorage.removeItem("user");
+                sessionStorage.clear();
+
+                // Clear cookies if any
+                document.cookie.split(";").forEach(function(c) {
+                    document.cookie = c.trim().split("=")[0] + 
+                    "=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+                });
+
+                // Redirect to signin
+                window.location.href = "signin.html";
+            }
+        }
+    </script>
+</body>
+</html>
