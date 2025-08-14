@@ -3,80 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
+    <title>Cylo | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
     <style>
+        /* --- Your original styles kept exactly as they were --- */
         body {
-            font-family: Arial, sans-serif;
-            background: #f7f7f7;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 400;
+            color: #1a1a1a;
+            background-color: white;
         }
-        .signin-box {
-            background: white;
-            padding: 25px;
-            border-radius: 6px;
-            width: 320px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 6px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background: black;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #333;
+        .container { max-width: 500px; margin: 60px auto; padding: 0 20px; }
+        .logo { text-align: center; margin-bottom: 30px; }
+        .logo h1 { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 4px; color: #1a1a1a; margin-bottom: 10px; text-transform: uppercase; }
+        .login-card { background-color: white; padding: 40px; border-radius: 0; box-shadow: none; border: 1px solid #eee; }
+        .tabs { display: flex; margin-bottom: 30px; }
+        .tab { flex: 1; text-align: center; padding: 15px 0; cursor: pointer; border-bottom: 1px solid #eee; color: #1a1a1a; transition: all 0.3s ease; font-size: 14px; }
+        .tab.active { color: #1a1a1a; border-bottom: 1px solid #1a1a1a; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 13px; color: #1a1a1a; }
+        .form-group input { width: 100%; padding: 10px 0; border: none; border-bottom: 1px solid #eee; background-color: transparent; font-size: 14px; transition: border 0.3s ease; color: #1a1a1a; }
+        .form-group input:focus { border-bottom: 1px solid #1a1a1a; outline: none; }
+        .btn { width: 100%; padding: 10px 0; background-color: white; color: #1a1a1a; border: 1px solid #1a1a1a; font-size: 14px; cursor: pointer; transition: background-color 0.3s, color 0.3s; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .btn:hover { background-color: #1a1a1a; color: white; }
+        .btn.btn-google { background-color: white; color: #1a1a1a; border: 1px solid #1a1a1a; display: flex; align-items: center; justify-content: center; padding: 10px 0; }
+        .btn.btn-google:hover { background-color: #1a1a1a; color: white; }
+        .btn.btn-google img { width: 20px; height: 20px; margin-right: 10px; }
+        .divider { display: flex; align-items: center; margin: 25px 0; color: #1a1a1a; font-size: 12px; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #eee; }
+        .divider::before { margin-right: 10px; }
+        .divider::after { margin-left: 10px; }
+        .forgot-password { text-align: center; margin-top: 15px; }
+        .forgot-password a { color: #1a1a1a; font-size: 13px; text-decoration: none; transition: color 0.3s ease; }
+        .forgot-password a:hover { color: #1a1a1a; text-decoration: underline; }
+        @media (max-width: 480px) {
+            .container { margin: 30px auto; }
+            .login-card { padding: 30px 20px; }
         }
     </style>
 </head>
 <body>
-
-    <div class="signin-box">
-        <h2>Sign In</h2>
-        <input type="text" id="username" placeholder="Enter username">
-        <input type="password" id="password" placeholder="Enter password">
-        <button onclick="handleLogin()">Login</button>
+    <div class="container">
+        <div class="logo">
+            <h1>CYLO</h1>
+        </div>
+        <div class="login-card">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('sign-in', event)">SIGN IN</div>
+                <div class="tab" onclick="switchTab('sign-up', event)">CREATE ACCOUNT</div>
+            </div>
+            <div class="tab-content active" id="sign-in">
+                <form id="signin-form">
+                    <div class="form-group">
+                        <label for="email">EMAIL</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">PASSWORD</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn">SIGN IN</button>
+                </form>
+                <div class="forgot-password">
+                    <a href="#">Forgot your password?</a>
+                </div>
+                <div class="divider">OR</div>
+                <button class="btn btn-google" id="google-signin">
+                    <img src="google.png" alt="Google logo" />
+                    SIGN IN WITH GOOGLE
+                </button>
+            </div>
+            <div class="tab-content" id="sign-up">
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label for="name">FULL NAME</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-email">EMAIL</label>
+                        <input type="email" id="new-email" name="new-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">PASSWORD</label>
+                        <input type="password" id="new-password" name="new-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">CONFIRM PASSWORD</label>
+                        <input type="password" id="confirm-password" name="confirm-password" required>
+                    </div>
+                    <button type="submit" class="btn">CREATE ACCOUNT</button>
+                </form>
+                <div class="divider">OR</div>
+                <button class="btn btn-google" id="google-signup">
+                    <img src="google.png" alt="Google logo" />
+                    SIGN UP WITH GOOGLE
+                </button>
+            </div>
+        </div>
     </div>
 
-    <script>
-        // If already logged in → go to account
-        if (localStorage.getItem("user")) {
-            window.location.href = "account.html";
-        }
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { app, auth } from './firebase-config.js';
+        import { signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } 
+        from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-        function handleLogin() {
-            let username = document.getElementById("username").value.trim();
-            let password = document.getElementById("password").value.trim();
+        // Tab switch
+        window.switchTab = function(tabId, event) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        };
 
-            if (username === "" || password === "") {
-                alert("Please fill in all fields");
+        // Sign In
+        document.getElementById('signin-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                alert("Signed in successfully!");
+                window.location.href = "account.html"; // Redirect to account page
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        // Sign Up
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('new-email').value;
+            const password = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
                 return;
             }
-
-            // Demo login (replace with real auth later)
-            if (username === "test" && password === "1234") {
-                localStorage.setItem("user", JSON.stringify({ username: username }));
-                window.location.href = "account.html";
-            } else {
-                alert("Invalid credentials");
+            try {
+                await createUserWithEmailAndPassword(auth, email, password);
+                alert("Account created successfully!");
+                window.location.href = "account.html"; // Redirect to account page
+            } catch (error) {
+                alert(error.message);
             }
-        }
-    </script>
+        });
 
+        // Google Sign In
+        const provider = new GoogleAuthProvider();
+        document.getElementById('google-signin').addEventListener('click', async () => {
+            try {
+                await signInWithPopup(auth, provider);
+                alert("Signed in with Google!");
+                window.location.href = "account.html"; // Redirect to account page
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        // Google Sign Up
+        document.getElementById('google-signup').addEventListener('click', async () => {
+            try {
+                await signInWithPopup(auth, provider);
+                alert("Account created with Google!");
+                window.location.href = "account.html"; // Redirect to account page
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    </script>
 </body>
 </html>
