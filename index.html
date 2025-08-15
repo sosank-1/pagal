@@ -1,408 +1,698 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>CYLO | Premium Fashion</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login Portal</title>
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
-        
-        :root {
-            --primary-color: #000000;
-            --secondary-color: #ffffff;
-            --accent-color: #f5f5f5;
-            --text-color: #222222;
-            --hover-color: #777777;
-        }
-        
-        body {
-            font-family: 'Montserrat', sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            color: var(--text-color);
-            overflow-x: hidden;
+            box-sizing: border-box;
         }
-        
-        .navbar {
-            transition: background-color 0.3s ease;
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
-        
-        .navbar.scrolled {
-            background-color: var(--secondary-color);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px;
+            overflow: hidden;
+            position: relative;
         }
-        
-        .dropdown:hover .dropdown-menu {
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .form-container {
+            padding: 40px 30px;
+            position: relative;
+        }
+
+        .toggle-buttons {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .toggle-btn.active {
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
             display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
         }
-        
-        .hero-section {
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            height: 90vh;
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fff;
         }
-        
-        /* Updated product overlay positioning */
-        .product-card:hover .product-overlay {
-            opacity: 1;
-        }
-        
-        .newsletter-input:focus {
+
+        .form-group input:focus {
             outline: none;
-            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-        
-        .mobile-menu {
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
+
+        .form-group input.error {
+            border-color: #e74c3c;
+            animation: shake 0.5s ease-in-out;
         }
-        
-        .mobile-menu.active {
-            transform: translateX(0);
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
-        
-        /* Background blur overlay */
-        .menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.info {
+            background: #cce7ff;
+            color: #0066cc;
+            border: 1px solid #b3d9ff;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .dashboard {
+            display: none;
+            text-align: center;
+            padding: 40px 30px;
+        }
+
+        .dashboard h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .dashboard p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .logout-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
+        }
+
+        .password-strength {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .strength-weak { color: #e74c3c; }
+        .strength-medium { color: #f39c12; }
+        .strength-strong { color: #27ae60; }
+
+        .hero-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .hero-image img {
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.2); /* Reduced opacity from 0.5 to 0.2 */
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            z-index: 40;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            object-fit: cover;
         }
-        
-        .menu-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        /* Fade-in animation styles */
-        .fade-in-element {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .fade-in-element.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        /* Custom style for bigger font in Editorial Section */
-        .editorial-title {
-            font-size: 3.5rem; /* Adjust as needed, Tailwind's text-5xl is 3rem */
-            line-height: 1;
-        }
-        @media (max-width: 768px) {
-            .hero-section {
-                height: 70vh;
-            }
-            
-            .product-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .editorial-title {
-                font-size: 2.5rem; /* Adjust for smaller screens */
-            }
-        }
-        
+
         @media (max-width: 480px) {
-            .hero-section {
-                height: 60vh;
+            .container {
+                margin: 10px;
+                max-width: calc(100% - 20px);
             }
             
-            .product-grid {
-                grid-template-columns: 1fr;
+            .form-container {
+                padding: 30px 20px;
             }
-            .editorial-title {
-                font-size: 2rem; /* Adjust for even smaller screens */
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
             }
         }
     </style>
 </head>
-<body class="bg-white">
-    <!-- Top Navigation -->
-    <div class="bg-black text-white text-xs py-2 px-4 text-center"></div>
-    <!-- Main Navigation -->
-    <nav class="navbar fixed top-0 w-full z-50 bg-transparent">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <!-- Left Side -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#" class="text-black hover:text-gray-600 uppercase text-sm font-medium">Men</a>
-                    <a href="#" class="text-black hover:text-gray-600 uppercase text-sm font-medium">Women</a>
-                    <a href="try 2.html" class="text-black hover:text-gray-600 uppercase text-sm font-medium">Style advisor</a>
-                </div>
-                <!-- Center Logo -->
-                <div class="absolute left-1/2 transform -translate-x-1/2">
-                    <a href="index.html" class="text-2xl font-bold tracking-widest uppercase">CYLO</a>
-                </div>
-                <!-- Right Side -->
-                <div class="hidden md:flex items-center space-x-6 ml-auto">
-                    <a href="#" class="text-black hover:text-gray-600"><i class="fas fa-search"></i></a>
-                    <a href="account.html" class="text-black hover:text-gray-600"><i class="fas fa-user"></i></a>
-                    <a href="#" class="text-black hover:text-gray-600"><i class="fas fa-heart"></i></a>
-                    <a href="#" class="text-black hover:text-gray-600"><i class="fas fa-shopping-bag"></i></a>
-                </div>
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center">
-                    <button id="menu-toggle" class="text-black focus:outline-none">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
-            </div>
+<body>
+    <div class="container">
+        <div class="hero-image">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/32521c41-43ec-4c5f-8901-fcf6b21969f5.png" alt="Modern secure login interface with digital security elements and gradient background in purple and blue tones" />
         </div>
-    </nav>
-    
-    <!-- Background Blur Overlay -->
-    <div id="menu-overlay" class="menu-overlay"></div>
-    
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 p-4">
-        <button id="menu-close" class="absolute top-4 right-4 text-black">
-            <i class="fas fa-times"></i>
-        </button>
-        <div class="mt-12 space-y-6">
-            <a href="#" class="block text-black uppercase text-sm font-medium py-2">Men</a>
-            <a href="#" class="block text-black uppercase text-sm font-medium py-2">Women</a>
-            <a href="try 2.html" class="block text-black uppercase text-sm font-medium py-2">Stye advisor</a>
-            <div class="border-t border-gray-200 pt-4 space-y-4">
-                <a href="#" class="block text-black py-2"><i class="fas fa-search mr-2"></i>Search</a>
-                <a href="account.html" class="block text-black py-2"><i class="fas fa-user mr-2"></i>Account</a>
-                <a href="#" class="block text-black py-2"><i class="fas fa-heart mr-2"></i>Wishlist</a>
-                <a href="#" class="block text-black py-2"><i class="fas fa-shopping-bag mr-2"></i>Bag</a>
+        
+        <div class="header">
+            <h1>Secure Portal</h1>
+            <p>Your trusted authentication gateway</p>
+        </div>
+
+        <div class="form-container" id="authContainer">
+            <div class="toggle-buttons">
+                <button class="toggle-btn active" id="loginToggle">Login</button>
+                <button class="toggle-btn" id="signupToggle">Sign Up</button>
             </div>
+
+            <div class="message" id="messageBox"></div>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                </div>
+                <button type="submit" class="submit-btn" id="loginBtn">
+                    <span class="btn-text">Sign In</span>
+                    <div class="loading"></div>
+                </button>
+                <div class="forgot-password">
+                    <a href="#" id="forgotPasswordLink">Forgot your password?</a>
+                </div>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signupForm" style="display: none;">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email Address</label>
+                    <input type="email" id="signupEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" name="password" required minlength="6">
+                    <div class="password-strength" id="passwordStrength"></div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                <button type="submit" class="submit-btn" id="signupBtn">
+                    <span class="btn-text">Create Account</span>
+                    <div class="loading"></div>
+                </button>
+            </form>
+        </div>
+
+        <!-- Dashboard (shown after successful login) -->
+        <div class="dashboard" id="dashboard">
+            <h2>Welcome to Your Dashboard!</h2>
+            <p id="welcomeMessage">You have successfully logged in.</p>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
         </div>
     </div>
-    <!-- Hero Section (Updated with black background) -->
-    <section class="hero-section flex items-center justify-center relative mt-20">
-        <!-- Black background replaces the image -->
-        <div class="absolute inset-0 bg-black"></div>
-        <!-- Overlay text -->
-        <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-            <div class="text-center text-white px-4">
-                <h1 class="text-4xl md:text-6xl font-light mb-4 uppercase tracking-wider">Summer Collection</h1>
-                <p class="text-lg md:text-xl mb-8 font-light max-w-2xl mx-auto">Elevate your wardrobe with CYLO's latest designs crafted from premium materials.</p>
-                <a href="#" class="border border-white text-white px-8 py-3 hover:bg-white hover:text-black transition duration-300 uppercase text-sm font-medium">Shop Now</a><br>
-             <br><br>
-                <a href="try 2.html" class="border border-white text-white px-8 py-3 hover:bg-white hover:text-black transition duration-300 uppercase text-sm font-medium">Try our new feature</a>
-            </div>
-        </div>
-        
-    </section>
-    <section class="fade-in-element">
-        <br>
-        <br>
-          <div class="text-center mb-16">
-            <h2 class="text-3xl font-light uppercase tracking-wider mb-4">Summer Essentials</h2>
-            <p class="max-w-2xl mx-auto text-gray-600">Discover our premium t-shirts and shorts for the season.</p>
-        </div>
-        <!-- Products Grid -->
-    <section class="pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto fade-in-element">
-        <div class="product-grid grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-            
-            <!-- Product 1: Black T-shirt -->
-            <div class="product-card relative group">
-                <a href="try 1.html" class="block">
-                    <div class="overflow-hidden relative">
-                        <img src="black front.png" 
-                             alt="CYLO Basic Black T-shirt with crew neckline, front view"
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
-                        <div class="product-overlay absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                            <button class="bg-black text-white px-6 py-3 text-sm font-medium uppercase pointer-events-auto" 
-                                    aria-label="Add Men's Regular Fit Round Neck T-Shirt to cart">
-                                Add To Cart
-                            </button>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg font-light mb-1">Men's Regular Fit T-Shirt</h3>
-                        <p class="text-gray-600 text-sm">Black, 100% Cotton</p>
-                        <p class="font-medium mt-1">Rs.399.00</p>
-                    </div>
-                </a>
-            </div>
-            <!-- Product 3: Shorts -->
-            <div class="product-card relative group">
-                <a href="try 1.html" class="block">
-                    <div class="overflow-hidden relative">
-                        <img src="nikker.jpeg" 
-                             alt="CYLO Men's Regular Fit Shorts, front view"
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
-                        <div class="product-overlay absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                            <button class="bg-black text-white px-6 py-3 text-sm font-medium uppercase pointer-events-auto" 
-                                    aria-label="Add Men's Regular Fit Shorts to cart">
-                                Add To Cart
-                            </button>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg font-light mb-1">Men's Regular Fit Shorts</h3>
-                        <p class="text-gray-600 text-sm">Black, 100% Cotton</p>
-                        <p class="font-medium mt-1">Rs.399.00</p>
-                    </div>
-                </a>
-            </div>
-            <!-- Product 4: Additional Product -->
-            <div class="product-card relative group">
-                <a href="try polo.html" class="block">
-                    <div class="overflow-hidden relative">
-                        <img src="polo neck.png" 
-                             alt="CYLO Basic Grey T-shirt with crew neckline, front view"
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
-                        <div class="product-overlay absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                            <button class="bg-black text-white px-6 py-3 text-sm font-medium uppercase pointer-events-auto" 
-                                    aria-label="Add Men's Regular Fit Round Neck T-Shirt to cart">
-                                Add To Cart
-                            </button>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <h3 class="text-lg font-light mb-1"> Men's Regular Fit Polo T-Shirt</h3>
-                        <p class="text-gray-600 text-sm">Navy Blue, 100% Cotton</p>
-                        <p class="font-medium mt-1">Rs.599.00</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-    <!-- Editorial Section -->
-    <section class="bg-gray-100 py-16 px-4 sm:px-6 lg:px-8 fade-in-element">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row items-center gap-12">
-                <!-- Removed the image div -->
-                <div class="md:w-full mt-6 md:mt-0 text-center"> <!-- Changed to md:w-full and added text-center -->
-                    <h2 class="editorial-title font-light uppercase tracking-wider mb-6">The CYLO Edit</h2> <!-- Added editorial-title class -->
-                    <p class="text-gray-600 mb-6 max-w-2xl mx-auto">At CYLO, we believe in timeless fashion that transcends seasons. Our designs blend contemporary aesthetics with enduring craftsmanship.</p>
-                    <p class="text-gray-600 mb-8 max-w-2xl mx-auto">Each piece is thoughtfully designed to become a staple in your wardrobe, crafted from premium materials sourced responsibly.</p>
-                    <a href="#" class="border border-black text-black px-8 py-3 hover:bg-black hover:text-white transition duration-300 uppercase text-sm font-medium">Discover Our Story</a>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Newsletter Section -->
-    <section class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto fade-in-element">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-light uppercase tracking-wider mb-4">Join CYLO</h2>
-            <p class="max-w-2xl mx-auto text-gray-600">Sign up for exclusive access to collections, events and promotions.</p>
-        </div>
-        
-        <div class="max-w-md mx-auto">
-            <form class="flex flex-col sm:flex-row gap-4">
-                <input type="email" placeholder="Your email address" class="newsletter-input flex-grow px-4 py-3 border border-gray-300 focus:border-black"/>
-                <button type="submit" class="bg-black text-white px-8 py-3 hover:bg-gray-800 transition duration-300 uppercase text-sm font-medium">Subscribe</button>
-            </form>
-            <p class="text-xs text-gray-500 mt-2 text-center">By subscribing, you agree to CYLO's Privacy Policy.</p>
-        </div>
-    </section>
-    
-    <!-- Footer -->
-    <footer class="bg-black text-white py-12 px-4 sm:px-6 lg:px-8 fade-in-element">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-                <h3 class="text-lg font-medium uppercase tracking-wider mb-4">CYLO</h3>
-                <p class="text-gray-400 text-sm">Premium fashion designed for the modern lifestyle.</p>
-            </div>
-            
-            <div>
-                <h4 class="text-sm font-medium uppercase tracking-wider mb-4">Shop</h4>
-                <ul class="space-y-2">
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm">Women</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm">Men</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm">Kids</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm">New Arrivals</a></li>
-                </ul>
-            </div>
-            
-            <div>
-                <h4 class="text-sm font-medium uppercase tracking-wider mb-4">Help</h4>
-                <ul class="space-y-2">
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm">Customer Service</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm">Track Order</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm">Returns & Exchanges</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm">Shipping Info</a></li>
-                </ul>
-            </div>
-            
-            <div>
-                <h4 class="text-sm font-medium uppercase tracking-wider mb-4">Connect</h4>
-                <div class="flex space-x-4 mb-4">
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-pinterest-p"></i></a>
-                </div>
-                <p class="text-gray-400 text-sm">© 2023 CYLO. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-    
+
     <script>
-        // Mobile Menu Toggle with Background Blur
-        const menuToggle = document.getElementById('menu-toggle');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuClose = document.getElementById('menu-close');
-        const menuOverlay = document.getElementById('menu-overlay');
-        
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.add('active');
-            menuOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent body scrolling
-        });
-        
-        menuClose.addEventListener('click', () => {
-            mobileMenu.classList.remove('active');
-            menuOverlay.classList.remove('active');
-            document.body.style.overflow = ''; // Restore body scrolling
-        });
-        
-        // Close menu when clicking on the overlay
-        menuOverlay.addEventListener('click', () => {
-            mobileMenu.classList.remove('active');
-            menuOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        });
-        
-        // Navbar Scroll Effect
-        const navbar = document.querySelector('.navbar');
-        
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 100) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
+        // IMPORTANT: Replace these with your actual EmailJS credentials
+        // You can get these from your EmailJS dashboard (emailjs.com)
+        const EMAILJS_PUBLIC_KEY = 'mk5D-t6uD1-6A1R-Z'; 
+        const EMAILJS_SERVICE_ID = 'service_0e6tt06'; 
+        const EMAILJS_TEMPLATE_ID = 'template_l65ibnn'; 
+
+        // Initialize EmailJS
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+
+        class AuthSystem {
+            constructor() {
+                this.currentUser = null;
+                this.users = JSON.parse(localStorage.getItem('users')) || [];
+                this.init();
             }
-        });
-        
-        // Product hover effect (already handled by CSS)
-        // Fade-in on scroll
-        document.addEventListener('DOMContentLoaded', () => {
-            const fadeInElements = document.querySelectorAll('.fade-in-element');
-            const observerOptions = {
-                root: null, // viewport
-                rootMargin: '0px',
-                threshold: 0.1 // 10% of the element must be visible
-            };
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        observer.unobserve(entry.target); // Stop observing once it's visible
+
+            init() {
+                this.bindEvents();
+                this.checkExistingSession();
+            }
+
+            bindEvents() {
+                // Toggle between login and signup
+                document.getElementById('loginToggle').addEventListener('click', () => this.showLogin());
+                document.getElementById('signupToggle').addEventListener('click', () => this.showSignup());
+
+                // Form submissions
+                document.getElementById('loginForm').addEventListener('submit', (e) => this.handleLogin(e));
+                document.getElementById('signupForm').addEventListener('submit', (e) => this.handleSignup(e));
+
+                // Logout
+                document.getElementById('logoutBtn').addEventListener('click', () => this.logout());
+
+                // Password strength checker
+                document.getElementById('signupPassword').addEventListener('input', (e) => this.checkPasswordStrength(e.target.value));
+
+                // Password confirmation
+                document.getElementById('confirmPassword').addEventListener('input', (e) => this.checkPasswordMatch());
+
+                // Forgot password
+                document.getElementById('forgotPasswordLink').addEventListener('click', (e) => this.handleForgotPassword(e));
+            }
+
+            showLogin() {
+                document.getElementById('loginToggle').classList.add('active');
+                document.getElementById('signupToggle').classList.remove('active');
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('signupForm').style.display = 'none';
+                this.hideMessage();
+            }
+
+            showSignup() {
+                document.getElementById('loginToggle').classList.remove('active');
+                document.getElementById('signupToggle').classList.add('active');
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('signupForm').style.display = 'block';
+                this.hideMessage();
+            }
+
+            async handleLogin(e) {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+
+                this.showLoading('loginBtn');
+
+                // Simulate API delay
+                await this.delay(1500);
+
+                const user = this.users.find(u => u.email === email && u.password === password);
+
+                if (user) {
+                    this.currentUser = user;
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    this.showMessage('Login successful! Welcome back.', 'success');
+                    
+                    setTimeout(() => {
+                        this.showDashboard();
+                    }, 1000);
+                } else {
+                    this.showMessage('Invalid email or password. Please try again.', 'error');
+                    this.shakeForm('loginForm');
+                }
+
+                this.hideLoading('loginBtn');
+            }
+
+            async handleSignup(e) {
+                e.preventDefault();
+                const name = document.getElementById('signupName').value;
+                const email = document.getElementById('signupEmail').value;
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                // Validation
+                if (password !== confirmPassword) {
+                    this.showMessage('Passwords do not match!', 'error');
+                    return;
+                }
+
+                if (this.users.find(u => u.email === email)) {
+                    this.showMessage('Email already registered. Please use a different email.', 'error');
+                    return;
+                }
+
+                this.showLoading('signupBtn');
+
+                // Create new user
+                const newUser = {
+                    id: Date.now(),
+                    name,
+                    email,
+                    password,
+                    registeredAt: new Date().toISOString()
+                };
+
+                // Simulate API delay for account creation
+                await this.delay(1000);
+
+                try {
+                    // Send welcome email using EmailJS
+                    await this.sendWelcomeEmail(newUser);
+                    
+                    // Save user to local storage
+                    this.users.push(newUser);
+                    localStorage.setItem('users', JSON.stringify(this.users));
+                    
+                    this.showMessage('Account created successfully! Welcome email sent. You can now login.', 'success');
+                    
+                    // Clear form and switch to login
+                    document.getElementById('signupForm').reset();
+                    document.getElementById('passwordStrength').textContent = ''; // Clear strength message
+                    setTimeout(() => {
+                        this.showLogin();
+                    }, 2000);
+                    
+                } catch (error) {
+                    console.error('Email sending failed:', error);
+                    // Even if email fails, create the account
+                    this.users.push(newUser);
+                    localStorage.setItem('users', JSON.stringify(this.users));
+                    this.showMessage('Account created successfully! (Welcome email could not be sent)', 'success');
+                    
+                    setTimeout(() => {
+                        this.showLogin();
+                    }, 2000);
+                }
+
+                this.hideLoading('signupBtn');
+            }
+
+            async sendWelcomeEmail(user) {
+                const templateParams = {
+                    to_name: user.name,
+                    to_email: user.email,
+                    from_name: 'CYLO Team', // Your company name
+                    subject: 'Thanks for joining with CYLO family!', // Specific subject
+                    login_url: window.location.href // Link back to your login page
+                };
+
+                try {
+                    // This is the actual EmailJS call
+                    const response = await emailjs.send(
+                        EMAILJS_SERVICE_ID,
+                        EMAILJS_TEMPLATE_ID,
+                        templateParams,
+                        EMAILJS_PUBLIC_KEY
+                    );
+                    console.log('Email sent successfully:', response);
+                    return response;
+                } catch (error) {
+                    console.error('Failed to send email:', error);
+                    throw error; // Re-throw to be caught by the calling function
+                }
+            }
+
+            handleForgotPassword(e) {
+                e.preventDefault();
+                const email = prompt('Enter your email address to reset password:');
+                
+                if (email) {
+                    const user = this.users.find(u => u.email === email);
+                    if (user) {
+                        this.showMessage('Password reset instructions sent to your email!', 'info');
+                        // In a real app, you would send a password reset email here
+                        console.log('Password reset email would be sent to:', email);
+                    } else {
+                        this.showMessage('Email not found in our records.', 'error');
                     }
+                }
+            }
+
+            checkPasswordStrength(password) {
+                const strengthIndicator = document.getElementById('passwordStrength');
+                let strength = 0;
+                let text = '';
+                let className = '';
+
+                if (password.length >= 6) strength++;
+                if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+                if (password.match(/\d/)) strength++;
+                if (password.match(/[^a-zA-Z\d]/)) strength++;
+
+                switch (strength) {
+                    case 0:
+                    case 1:
+                        text = 'Weak password';
+                        className = 'strength-weak';
+                        break;
+                    case 2:
+                    case 3:
+                        text = 'Medium strength';
+                        className = 'strength-medium';
+                        break;
+                    case 4:
+                        text = 'Strong password';
+                        className = 'strength-strong';
+                        break;
+                }
+
+                strengthIndicator.textContent = text;
+                strengthIndicator.className = `password-strength ${className}`;
+            }
+
+            checkPasswordMatch() {
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const confirmInput = document.getElementById('confirmPassword');
+
+                if (confirmPassword && password !== confirmPassword) {
+                    confirmInput.classList.add('error');
+                } else {
+                    confirmInput.classList.remove('error');
+                }
+            }
+
+            showDashboard() {
+                document.getElementById('authContainer').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                document.getElementById('welcomeMessage').textContent = 
+                    `Welcome back, ${this.currentUser.name}! You have successfully logged in.`;
+            }
+
+            logout() {
+                this.currentUser = null;
+                localStorage.removeItem('currentUser');
+                document.getElementById('authContainer').style.display = 'block';
+                document.getElementById('dashboard').style.display = 'none';
+                document.getElementById('loginForm').reset();
+                document.getElementById('signupForm').reset();
+                this.showLogin();
+                this.showMessage('You have been logged out successfully.', 'info');
+            }
+
+            checkExistingSession() {
+                const savedUser = localStorage.getItem('currentUser');
+                if (savedUser) {
+                    this.currentUser = JSON.parse(savedUser);
+                    this.showDashboard();
+                }
+            }
+
+            showMessage(text, type) {
+                const messageBox = document.getElementById('messageBox');
+                messageBox.textContent = text;
+                messageBox.className = `message ${type}`;
+                messageBox.style.display = 'block';
+            }
+
+            hideMessage() {
+                document.getElementById('messageBox').style.display = 'none';
+            }
+
+            showLoading(buttonId) {
+                const button = document.getElementById(buttonId);
+                const btnText = button.querySelector('.btn-text');
+                const loading = button.querySelector('.loading');
+                
+                btnText.style.opacity = '0';
+                loading.style.display = 'block';
+                button.disabled = true;
+            }
+
+            hideLoading(buttonId) {
+                const button = document.getElementById(buttonId);
+                const btnText = button.querySelector('.btn-text');
+                const loading = button.querySelector('.loading');
+                
+                btnText.style.opacity = '1';
+                loading.style.display = 'none';
+                button.disabled = false;
+            }
+
+            shakeForm(formId) {
+                const inputs = document.querySelectorAll(`#${formId} input`);
+                inputs.forEach(input => {
+                    input.classList.add('error');
+                    setTimeout(() => input.classList.remove('error'), 500);
                 });
-            }, observerOptions);
-            fadeInElements.forEach(element => {
-                observer.observe(element);
-            });
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // Initialize the authentication system when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new AuthSystem();
         });
+
+        // Demo data for testing
+        // Add some sample users for testing
+        if (!localStorage.getItem('users')) {
+            const demoUsers = [
+                {
+                    id: 1,
+                    name: 'John Doe',
+                    email: 'john@example.com',
+                    password: 'password123',
+                    registeredAt: new Date().toISOString()
+                }
+            ];
+            localStorage.setItem('users', JSON.stringify(demoUsers));
+        }
     </script>
 </body>
 </html>
