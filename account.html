@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-font: 'Montserrat', sans-serif;
+            --primary-color: #000;
+            --secondary-color: #666;
+            --accent-color: #c0392b;
+            --light-bg: #fafafa;
+            --border-color: #e5e5e5;
+            --hover-bg: #f0f0f0;
+            --transition: all 0.3s ease;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: var(--primary-font);
+            color: var(--primary-color);
+            background-color: #fff;
+            line-height: 1.5;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+            max-width: 100%;
+        }
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 240px;
+            background-color: #fff;
+            border-right: 1px solid var(--border-color);
+            padding: 40px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+        .nav-menu {
+            list-style: none;
+            flex: 1;
+        }
+        .nav-item {
+            margin-bottom: 2px;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 30px;
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-size: 12px;
+            font-weight: 400;
+            transition: var(--transition);
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .nav-link:hover {
+            background-color: var(--hover-bg);
+            color: var(--primary-color);
+        }
+        .nav-link.active {
+            color: var(--primary-color);
+            font-weight: 500;
+            background-color: var(--light-bg);
+        }
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background-color: var(--accent-color);
+        }
+        .nav-link i {
+            margin-right: 12px;
+            font-size: 14px;
+            width: 20px;
+            text-align: center;
+        }
+        /* Logout Link */
+        .logout-link {
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 240px;
+            padding: 50px;
+            max-width: 1200px;
+            transition: margin-left 0.3s ease;
+        }
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .content-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Minimalistic Section Styles */
+        .section-header {
+            margin-bottom: 40px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .section-header h2 {
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .minimal-card {
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 0;
+            padding: 35px;
+            margin-bottom: 30px;
+        }
+        .minimal-card h3 {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .minimal-card p {
+            color: var(--secondary-color);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            letter-spacing: 0.3px;
+        }
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 0;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-right: 15px;
+            margin-bottom: 15px;
+        }
+        .btn:hover {
+            background-color: #333;
+        }
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 0;
+            font-family: var(--primary-font);
+            font-size: 14px;
+            font-weight: 300;
+            transition: var(--transition);
+            background-color: #fff;
+            letter-spacing: 0.3px;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 101;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 0;
+            cursor: pointer;
+        }
+        
+        /* Profile Summary */
+        .profile-summary {
+            display: block;
+        }
+        .profile-summary.hidden {
+            display: none;
+        }
+        .profile-form {
+            display: none;
+        }
+        .profile-form.active {
+            display: block;
+        }
+        .welcome-message {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+        }
+        .empty-state i {
+            font-size: 48px;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+        .empty-state h3 {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+        .empty-state p {
+            color: var(--secondary-color);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 80px 20px 50px;
+            }
+        }
+        
+        /* Success Message */
+        .success-message {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        /* Error Message */
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+
+        /* Orders List Styles (Added for functionality) */
+        .orders-list {
+            list-style: none;
+            padding: 0;
+        }
+        .order-item {
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: var(--light-bg);
+        }
+        .order-item h4 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .order-status {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" data-section="profile">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="orders">
+                            <i class="fas fa-shopping-bag"></i> Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="settings">
+                            <i class="fas fa-cog"></i> Account Settings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="wishlist">
+                            <i class="fas fa-heart"></i> Wishlist
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="payment">
+                            <i class="fas fa-credit-card"></i> Payment Options
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="reviews">
+                            <i class="fas fa-star"></i> Reviews
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="returns">
+                            <i class="fas fa-undo"></i> Returns
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-section="help">
+                            <i class="fas fa-question-circle"></i> Help
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Logout Link -->
+            <div class="logout-link">
+                <a href="#" class="nav-link" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Log Out
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Profile Section -->
+            <section id="profile" class="content-section active">
+                <div class="section-header">
+                    <h2>Profile</h2>
+                </div>
+                
+                <div class="success-message" id="profile-success-message">
+                    Profile updated successfully!
+                </div>
+                
+                <div class="error-message" id="profile-error-message">
+                    Error updating profile. Please try again.
+                </div>
+                
+                <div class="minimal-card">
+                    <h3>Personal Information</h3>
+                    
+                    <!-- Profile Summary View -->
+                    <div class="profile-summary" id="profile-summary">
+                        <p class="welcome-message">Welcome, <strong id="welcome-name">Loading...</strong></p>
+                        <button class="btn" id="edit-profile-btn">Edit Profile</button>
+                    </div>
+                    
+                    <!-- Profile Edit Form -->
+                    <form class="profile-form" id="profile-form">
+                        <div class="form-group">
+                            <label for="display-name">Full Name</label>
+                            <input type="text" id="display-name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input type="text" id="address" class="form-control">
+                        </div>
+                        <button type="submit" class="btn">Save Changes</button>
+                        <button type="button" class="btn btn-outline" id="cancel-edit-btn">Cancel</button>
+                    </form>
+                </div>
+            </section>
+            
+            <!-- Orders Section -->
+            <section id="orders" class="content-section">
+                <div class="section-header">
+                    <h2>Orders</h2>
+                </div>
+                
+                <div class="minimal-card">
+                    <ul class="orders-list" id="orders-list">
+                        <!-- Orders will be populated here dynamically -->
+                    </ul>
+                    <div class="empty-state" id="orders-empty-state">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h3>No orders yet</h3>
+                        <p>When you place an order, it will appear here.</p>
+                        <button class="btn">Start Shopping</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Account Settings Section -->
+            <section id="settings" class="content-section">
+                <div class="section-header">
+                    <h2>Account Settings</h2>
+                </div>
+                
+                <div class="minimal-card">
+                    <h3>Preferences</h3>
+                    <form id="settings-form">
+                        <div class="form-group">
+                            <label for="newsletter">Subscribe to Newsletter</label>
+                            <input type="checkbox" id="newsletter" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="notifications">Email Notifications</label>
+                            <input type="checkbox" id="notifications" class="form-control">
+                        </div>
+                        <button type="submit" class="btn">Update Settings</button>
+                    </form>
+                </div>
+            </section>
+            
+            <!-- Wishlist Section -->
+            <section id="wishlist" class="content-section">
+                <div class="section-header">
+                    <h2>Wishlist</h2>
+                </div>
+                
+                <div class="minimal-card">
+                    <ul class="orders-list" id="wishlist-list">
+                        <!-- Wishlist items will be populated here dynamically -->
+                    </ul>
+                    <div class="empty-state" id="wishlist-empty-state">
+                        <i class="fas fa-heart"></i>
+                        <h3>Your wishlist is empty</h3>
+                        <p>Add items to your wishlist and they will appear here.</p>
+                        <button class="btn">Browse Products</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Payment Options Section -->
+            <section id="payment" class="content-section">
+                <div class="section-header">
+                    <h2>Payment Options</h2>
+                </div>
+                
+                <div class="minimal-card">
+                    <h3>Payment Methods</h3>
+                    <ul class="orders-list" id="payment-methods-list">
+                        <!-- Payment methods will be populated here dynamically -->
+                    </ul>
+                    <div class="empty-state" id="payment-empty-state">
+                        <i class="fas fa-credit-card"></i>
+                        <h3>No payment methods saved</h3>
+                        <p>Add a payment method to make checkout faster.</p>
+                        <button class="btn" id="add-payment-btn">Add Payment Method</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Reviews Section -->
+            <section id="reviews" class="content-section">
+                <div class="section-header">
+                    <h2>Reviews</h2>
+                </div>
+                
+                <div class="minimal-card">
+                    <ul class="orders-list" id="reviews-list">
+                        <!-- Reviews will be populated here dynamically -->
+                    </ul>
+                    <div class="empty-state" id="reviews-empty-state">
+                        <i class="fas fa-star"></i>
+                        <h3>No reviews yet</h3>
+                        <p>When you review a product, it will appear here.</p>
+                        <button class="btn">Browse Products</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Returns Section -->
+            <section id="returns" class="content-section">
+                <div class="section-header">
+                    <h2>Returns</h2>
+                </div>
+                
+                <div class="minimal-card">
+                    <ul class="orders-list" id="returns-list">
+                        <!-- Returns will be populated here dynamically -->
+                    </ul>
+                    <div class="empty-state" id="returns-empty-state">
+                        <i class="fas fa-undo"></i>
+                        <h3>No returns yet</h3>
+                        <p>When you request a return, it will appear here.</p>
+                        <button class="btn">View Orders</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Help Section -->
+            <section id="help" class="content-section">
+                <div class="section-header">
+                    <h2>Help</h2>
+                </div>
+                
+                <div class="minimal-card">
+                    <h3>Customer Support</h3>
+                    <p>Need help? Contact our customer support team.</p>
+                    <button class="btn">Contact Support</button>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Firebase Auth Integration -->
+    <script type="module">
+        import { auth } from './firebase-config.js';
+        import { onAuthStateChanged, signOut, updateProfile, updateEmail } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        
+        // Redirect if not logged in & display user email
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // If user is not logged in, redirect to the sign-in page
+                window.location.href = "signin.html"; 
+            } else {
+                // If user is logged in, display their email and display name
+                const email = user.email;
+                const displayName = user.displayName || email; // Use email if displayName is null
+
+                // Set email and display name in form
+                document.getElementById("email").value = email;
+                document.getElementById("display-name").value = displayName;
+                
+                // Set welcome message
+                document.getElementById("welcome-name").textContent = displayName;
+                
+                // Load additional user data from localStorage if available
+                const userData = JSON.parse(localStorage.getItem('userData')) || {};
+                document.getElementById("phone").value = userData.phone || "";
+                document.getElementById("address").value = userData.address || "";
+
+                // Example: Populate Orders (replace with actual data fetching)
+                populateOrders(user.uid);
+                populateWishlist(user.uid);
+                populatePaymentMethods(user.uid);
+                populateReviews(user.uid);
+                populateReturns(user.uid);
+                loadSettings(user.uid);
+            }
+        });
+        
+        // Logout function
+        window.handleLogout = async function() {
+            if (confirm('Are you sure you want to log out?')) {
+                try {
+                    await signOut(auth);
+                    // After logout, redirect to the sign-in page
+                    window.location.href = "signin.html"; 
+                } catch (error) {
+                    console.error("Error logging out:", error);
+                    alert("Error logging out: " + error.message);
+                }
+            }
+        };
+        
+        // Profile form submission
+        document.getElementById('profile-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const displayName = document.getElementById('display-name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            
+            try {
+                const currentUser = auth.currentUser;
+
+                // Update display name in Firebase Auth
+                if (displayName !== currentUser.displayName) {
+                    await updateProfile(currentUser, {
+                        displayName: displayName
+                    });
+                }
+                
+                // Update email in Firebase Auth
+                if (email !== currentUser.email) {
+                    await updateEmail(currentUser, email);
+                }
+                
+                // Save additional user data to localStorage (or a database like Firestore)
+                const userData = {
+                    phone: phone,
+                    address: address
+                };
+                localStorage.setItem('userData', JSON.stringify(userData));
+                
+                // Update welcome message
+                document.getElementById("welcome-name").textContent = displayName;
+                
+                // Show success message
+                const successMessage = document.getElementById('profile-success-message');
+                successMessage.classList.add('show');
+                
+                // Hide error message if shown
+                const errorMessage = document.getElementById('profile-error-message');
+                errorMessage.classList.remove('show');
+                
+                // Hide success message after 3 seconds
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 3000);
+                
+                // Switch back to summary view
+                document.getElementById('profile-summary').classList.remove('hidden');
+                document.getElementById('profile-form').classList.remove('active');
+                
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                
+                // Show error message
+                const errorMessage = document.getElementById('profile-error-message');
+                errorMessage.textContent = `Error updating profile: ${error.message}`;
+                errorMessage.classList.add('show');
+                
+                // Hide error message after 5 seconds
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 5000);
+            }
+        });
+
+        // Settings form submission
+        document.getElementById('settings-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newsletter = document.getElementById('newsletter').checked;
+            const notifications = document.getElementById('notifications').checked;
+
+            // In a real application, you would save these settings to a database
+            console.log("Settings saved:", { newsletter, notifications });
+            alert("Settings updated successfully!");
+        });
+
+        // Placeholder functions for populating dynamic content
+        function populateOrders(userId) {
+            const ordersList = document.getElementById('orders-list');
+            const ordersEmptyState = document.getElementById('orders-empty-state');
+            // In a real app, fetch orders from a database using userId
+            const orders = JSON.parse(localStorage.getItem(`orders_${userId}`)) || []; // Example from localStorage
+
+            if (orders.length > 0) {
+                ordersEmptyState.style.display = 'none';
+                ordersList.innerHTML = orders.map(order => `
+                    <li class="order-item">
+                        <h4>Order #${order.id}</h4>
+                        <p>Date: ${order.date}</p>
+                        <p>Total: $${order.total.toFixed(2)}</p>
+                        <p>Status: <span class="order-status">${order.status}</span></p>
+                    </li>
+                `).join('');
+            } else {
+                ordersEmptyState.style.display = 'block';
+                ordersList.innerHTML = '';
+            }
+        }
+
+        function populateWishlist(userId) {
+            const wishlistList = document.getElementById('wishlist-list');
+            const wishlistEmptyState = document.getElementById('wishlist-empty-state');
+            // In a real app, fetch wishlist items from a database using userId
+            const wishlist = JSON.parse(localStorage.getItem(`wishlist_${userId}`)) || []; // Example from localStorage
+
+            if (wishlist.length > 0) {
+                wishlistEmptyState.style.display = 'none';
+                wishlistList.innerHTML = wishlist.map(item => `
+                    <li class="order-item">
+                        <h4>${item.name}</h4>
+                        <p>Price: $${item.price.toFixed(2)}</p>
+                        <p>Added: ${item.dateAdded}</p>
+                    </li>
+                `).join('');
+            } else {
+                wishlistEmptyState.style.display = 'block';
+                wishlistList.innerHTML = '';
+            }
+        }
+
+        function populatePaymentMethods(userId) {
+            const paymentMethodsList = document.getElementById('payment-methods-list');
+            const paymentEmptyState = document.getElementById('payment-empty-state');
+            // In a real app, fetch payment methods from a database using userId
+            const paymentMethods = JSON.parse(localStorage.getItem(`paymentMethods_${userId}`)) || []; // Example from localStorage
+
+            if (paymentMethods.length > 0) {
+                paymentEmptyState.style.display = 'none';
+                paymentMethodsList.innerHTML = paymentMethods.map(method => `
+                    <li class="order-item">
+                        <h4>${method.type} ending in ${method.lastFour}</h4>
+                        <p>Expires: ${method.expiry}</p>
+                    </li>
+                `).join('');
+            } else {
+                paymentEmptyState.style.display = 'block';
+                paymentMethodsList.innerHTML = '';
+            }
+        }
+
+        function populateReviews(userId) {
+            const reviewsList = document.getElementById('reviews-list');
+            const reviewsEmptyState = document.getElementById('reviews-empty-state');
+            // In a real app, fetch reviews from a database using userId
+            const reviews = JSON.parse(localStorage.getItem(`reviews_${userId}`)) || []; // Example from localStorage
+
+            if (reviews.length > 0) {
+                reviewsEmptyState.style.display = 'none';
+                reviewsList.innerHTML = reviews.map(review => `
+                    <li class="order-item">
+                        <h4>${review.productName} - ${review.rating} Stars</h4>
+                        <p>${review.comment}</p>
+                        <p>Date: ${review.date}</p>
+                    </li>
+                `).join('');
+            } else {
+                reviewsEmptyState.style.display = 'block';
+                reviewsList.innerHTML = '';
+            }
+        }
+
+        function populateReturns(userId) {
+            const returnsList = document.getElementById('returns-list');
+            const returnsEmptyState = document.getElementById('returns-empty-state');
+            // In a real app, fetch returns from a database using userId
+            const returns = JSON.parse(localStorage.getItem(`returns_${userId}`)) || []; // Example from localStorage
+
+            if (returns.length > 0) {
+                returnsEmptyState.style.display = 'none';
+                returnsList.innerHTML = returns.map(item => `
+                    <li class="order-item">
+                        <h4>Return for Order #${item.orderId}</h4>
+                        <p>Item: ${item.productName}</p>
+                        <p>Status: <span class="order-status">${item.status}</span></p>
+                    </li>
+                `).join('');
+            } else {
+                returnsEmptyState.style.display = 'block';
+                returnsList.innerHTML = '';
+            }
+        }
+
+        function loadSettings(userId) {
+            // In a real app, load settings from a database
+            const settings = JSON.parse(localStorage.getItem(`settings_${userId}`)) || {
+                newsletter: false,
+                notifications: true
+            };
+            document.getElementById('newsletter').checked = settings.newsletter;
+            document.getElementById('notifications').checked = settings.notifications;
+        }
+    </script>
+    
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all nav links
+                    navLinks.forEach(navLink => {
+                        navLink.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked nav link
+                    this.classList.add('active');
+                    
+                    // Hide all content sections
+                    contentSections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    
+                    // Show the corresponding content section
+                    const sectionId = this.getAttribute('data-section');
+                    document.getElementById(sectionId).classList.add('active');
+                    
+                    // Close mobile menu if open
+                    const sidebar = document.getElementById('sidebar');
+                    if (sidebar.classList.contains('active')) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+            
+            // Mobile menu toggle
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            mobileMenuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+            });
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            });
+            
+            // Profile edit functionality
+            const editProfileBtn = document.getElementById('edit-profile-btn');
+            const cancelEditBtn = document.getElementById('cancel-edit-btn');
+            const profileSummary = document.getElementById('profile-summary');
+            const profileForm = document.getElementById('profile-form');
+            
+            editProfileBtn.addEventListener('click', function() {
+                profileSummary.classList.add('hidden');
+                profileForm.classList.add('active');
+            });
+            
+            cancelEditBtn.addEventListener('click', function() {
+                profileSummary.classList.remove('hidden');
+                profileForm.classList.remove('active');
+                
+                // Reset form to current values
+                // This part relies on `auth.currentUser` being available, which is handled by onAuthStateChanged
+                // For a robust solution, you might re-fetch user data or store it in a global state.
+                if (window.auth && window.auth.currentUser) { // Check if auth and currentUser are available
+                    const currentUser = window.auth.currentUser;
+                    const userData = JSON.parse(localStorage.getItem('userData')) || {};
+                    
+                    document.getElementById('display-name').value = currentUser.displayName || "";
+                    document.getElementById('email').value = currentUser.email || "";
+                    document.getElementById('phone').value = userData.phone || "";
+                    document.getElementById('address').value = userData.address || "";
+                }
+            });
+            
+            // Handle button clicks in empty states
+            const startShoppingBtn = document.querySelector('#orders .btn');
+            if (startShoppingBtn) {
+                startShoppingBtn.addEventListener('click', function() {
+                    window.location.href = 'index.html'; // Assuming you have an index.html for shopping
+                });
+            }
+            
+            const browseProductsBtns = document.querySelectorAll('#wishlist .btn, #reviews .btn');
+            browseProductsBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    window.location.href = 'index.html'; // Assuming you have an index.html for browsing products
+                });
+            });
+            
+            const viewOrdersBtn = document.querySelector('#returns .btn');
+            if (viewOrdersBtn) {
+                viewOrdersBtn.addEventListener('click', function() {
+                    document.querySelector('[data-section="orders"]').click(); // Switch to orders tab
+                });
+            }
+            
+            const contactSupportBtn = document.querySelector('#help .btn');
+            if (contactSupportBtn) {
+                contactSupportBtn.addEventListener('click', function() {
+                    alert('Contact: support@cylo.com'); // Placeholder for contact action
+                });
+            }
+            
+            const updateSettingsBtn = document.querySelector('#settings .btn');
+            if (updateSettingsBtn) {
+                updateSettingsBtn.addEventListener('click', function() {
+                    // The form submission for settings is handled by the script type="module"
+                    // This button click will trigger the form's submit event.
+                });
+            }
+            
+            const addPaymentBtn = document.querySelector('#payment .btn');
+            if (addPaymentBtn) {
+                addPaymentBtn.addEventListener('click', function() {
+                    alert('Redirecting to payment setup...'); // Placeholder for adding payment method
+                });
+            }
+        });
+    </script>
+</body>
+</html>
